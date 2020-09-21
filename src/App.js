@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import './assets/css/tooltip.css';
 import './assets/css/main.css';
@@ -13,6 +13,7 @@ const App = () => {
     { id: "custom1", name: "custom", title: "Custom 1", actived: false },
     { id: "custom2", name: "custom", title: "demo long text demo long text demo", actived: false },
   ])
+
   const [selected, setSelected] = useState();
 
   const selectProfile = (i) => {
@@ -24,9 +25,12 @@ const App = () => {
     });
     newProfile[index].actived = false;
     newProfile[i].actived = true;
-    console.log(newProfile);
     setProfile(newProfile);
   }
+
+  useEffect(() => {
+    setSelected(() => profile.filter((x) => x.actived === true)[0]);
+  }, profile.activated);
 
   return (
     <div className="main-container">
@@ -75,7 +79,7 @@ const App = () => {
 
         <div className="thx-window">
           <div className="sub-title flex">
-            <h1 id="eqTitle" className="eq-title">Default</h1>
+            <h1 id="eqTitle" className="eq-title">{selected ? selected.title : ""}</h1>
           </div>
         </div>
       </div>
