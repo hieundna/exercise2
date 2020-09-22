@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { createRef, useEffect, useRef, useState } from 'react';
 import './App.css';
 import './assets/css/tooltip.css';
 import './assets/css/main.css';
@@ -11,26 +11,137 @@ const App = () => {
     { id: "profile3", name: "movie", title: "Movie", actived: false },
     { id: "profile4", name: "music", title: "Music", actived: false },
     { id: "custom1", name: "custom", title: "Custom 1", actived: false },
-    { id: "custom2", name: "custom", title: "demo long text demo long text demo", actived: false },
+    { id: "custom2", name: "custom", title: "Demo Long Text Demo Long Text Demo", actived: false },
   ])
 
   const [selected, setSelected] = useState();
+  const [isDelete, setIsDelete] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [count, setCount] = useState(0);
+
+  const profileList = useRef();
+  const delButton = useRef();
+  const editButton = useRef();
+
+  const showButton = selected && selected.name === "custom" ? " show" : "";
+  const showEdit = isEdit ? " show" : "";
+  const showDelete = isDelete ? " show" : "";
+  const isFirstItem = selected && selected === profile[0] ? " disabled" : "";
+  const isLastItem = selected && selected === profile[profile.length - 1] ? " disabled" : "";
 
   const selectProfile = (i) => {
     let newProfile = [...profile];
-    let index = newProfile.findIndex((x) => {
-      return x === newProfile.filter((x) => {
-        return x.actived === true;
-      })[0];
-    });
+    let index = getIndexSelected();
     newProfile[index].actived = false;
     newProfile[i].actived = true;
     setProfile(newProfile);
   }
 
+  const getSelected = () => {
+    return profile.filter((x) => x.actived === true)[0];
+  }
+  const getIndexSelected = () => {
+    return profile.findIndex((x) => x === getSelected())
+  }
+
+  const profileUp = () => {
+    let newProfile = [...profile];
+    let index = getIndexSelected();
+    let temp = newProfile[index];
+    if (!newProfile[index - 1]) {
+      return;
+    } else {
+      newProfile[index] = newProfile[index - 1];
+      newProfile[index - 1] = temp;
+      setProfile(newProfile);
+    }
+  }
+  const profileDown = () => {
+    let newProfile = [...profile];
+    let index = getIndexSelected();
+    let temp = newProfile[index];
+    if (!newProfile[index + 1]) {
+      return;
+    } else {
+      newProfile[index] = newProfile[index + 1];
+      newProfile[index + 1] = temp;
+      setProfile(newProfile);
+    }
+  }
+
+  const addProfile = () => {
+    let id = new Date().getTime();
+    profile.push({ id: id, name: "custom", title: "New Profile", actived: false });
+    selectProfile(profile.length - 1);
+    setCount((x) => x + 1);
+  }
+
+  const editProfile = () => {
+    setIsEdit(!isEdit);
+  }
+
+  const handleChange = (e) => {
+    let name = e.target.value;
+    setSelected({...selected, title: name});
+  }
+  const renameProfile = () => {
+    let newProfile = [...profile];
+    let index = getIndexSelected();
+    if(selected && selected.title.trim()===""){
+      setSelected(newProfile[index]);
+      setIsEdit(false);
+      return;
+    }
+    let name = selected.title;
+    if(name){
+      name = name.replace(/\s{2,}/g, ' ').trim();
+    }
+    newProfile[index].title = name;
+    setProfile(newProfile);
+    setIsEdit(false);
+  }
+  const onSubmit = (e) => {
+    e.preventDefault();
+    renameProfile();
+  }
+
+  const deleteProfile = () => {
+    let index = getIndexSelected();
+    profile.splice(index, 1);
+    if (profile[index - 1]) {
+      profile[index - 1].actived = true;
+      setSelected(profile[index - 1]);
+    }
+    setIsDelete(false);
+  }
+
+  const clickOutSide = (event) => {
+    if (!document.getElementById("profileDelete").contains(event.target)) {
+      if (delButton && !delButton.current.contains(event.target)) {
+        setIsDelete(false);
+      }
+    }
+  }
+
   useEffect(() => {
-    setSelected(() => profile.filter((x) => x.actived === true)[0]);
-  }, profile.activated);
+    document.addEventListener('click', clickOutSide);
+    return () => document.removeEventListener('click', clickOutSide);
+  }, [])
+
+  useEffect(() => {
+    if (count > 0) {
+      profileList.current.scrollTo(0, profileList.current.scrollHeight);
+    }
+    if(isEdit) {
+      editButton.current.style.top = document.getElementById(selected.id).offsetTop + 'px';
+      editButton.current.focus();
+      editButton.current.select();
+    }
+  }, [count, isEdit])
+
+  useEffect(() => {
+    setSelected(getSelected);
+  }, [profile]);
 
   return (
     <div className="main-container">
@@ -40,7 +151,7 @@ const App = () => {
             Profile List
           </div>
           <div id="profileWrapper" className="drawer-select flex">
-            <div id="profileList" className="scrollable">
+            <div id="profileList" ref={profileList} className="scrollable">
               {profile.map((item, i) =>
                 <div
                   key={i}
@@ -54,25 +165,29 @@ const App = () => {
                   {item.title}
                 </div>
               )}
-              <input
+              <form onSubmit={onSubmit}><input
                 id="profileRename"
-                className="profile-item"
+                ref={editButton}
+                onChange={handleChange}
+                onBlur={renameProfile}
+                value={selected ? selected.title : ""}
+                className={"profile-item" + showEdit}
                 placeholder="Enter Profile Name"
                 maxlength="25"
-              />
+              /></form>
             </div>
             <div className="toolbar flex">
-              <div className="icon add" id="profileAdd"></div>
-              <div className="icon edit" id="profileEdit"></div>
-              <div className="icon delete" id="profileDelete"></div>
+              <div className="icon add" id="profileAdd" onClick={addProfile}></div>
+              <div className={"icon edit" + showButton} id="profileEdit" onClick={editProfile}></div>
+              <div className={"icon delete" + showButton} id="profileDelete" onClick={() => setIsDelete(!isDelete)}></div>
 
-              <div className="icon down" id="profileDown"></div>
-              <div className="icon up disabled" id="profileUp"></div>
+              <div className={"icon down" + isLastItem} id="profileDown" onClick={profileDown}></div>
+              <div className={"icon up" + isFirstItem} id="profileUp" onClick={profileUp}></div>
             </div>
-            <div id="profileDelCfm" className="profile-del alert flex">
+            <div id="profileDelCfm" className={"profile-del alert flex" + showDelete} ref={delButton}>
               <div className="title">delete eq</div>
               <div className="body-text t-center" id="delName">delete eq</div>
-              <div className="thx-btn" id="cfmDelete">delete</div>
+              <div className="thx-btn" id="cfmDelete" onClick={deleteProfile}>delete</div>
             </div>
           </div>
         </div>
