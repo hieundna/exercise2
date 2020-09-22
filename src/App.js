@@ -82,19 +82,24 @@ const App = () => {
 
   const handleChange = (e) => {
     let name = e.target.value;
-    setSelected({...selected, title: name});
+    setSelected({ ...selected, title: name });
   }
   const renameProfile = () => {
     let newProfile = [...profile];
     let index = getIndexSelected();
-    if(selected && selected.title.trim()===""){
+    if (selected && selected.title.trim() === "") {
       setSelected(newProfile[index]);
       setIsEdit(false);
       return;
     }
     let name = selected.title;
-    if(name){
-      name = name.replace(/\s{2,}/g, ' ').trim();
+    if (name) {
+      name = name.replace(/\s{2,}/g, ' ').trim().split(" ");
+      for (let i = 0; i < name.length; i++) {
+
+        name[i] = name[i][0].toUpperCase() + name[i].slice(1);
+      }
+      name = name.join(" ");
     }
     newProfile[index].title = name;
     setProfile(newProfile);
@@ -111,6 +116,9 @@ const App = () => {
     if (profile[index - 1]) {
       profile[index - 1].actived = true;
       setSelected(profile[index - 1]);
+    } else {
+      profile[index].actived = true;
+      setSelected(profile[index]);
     }
     setIsDelete(false);
   }
@@ -132,7 +140,7 @@ const App = () => {
     if (count > 0) {
       profileList.current.scrollTo(0, profileList.current.scrollHeight);
     }
-    if(isEdit) {
+    if (isEdit) {
       editButton.current.style.top = document.getElementById(selected.id).offsetTop + 'px';
       editButton.current.focus();
       editButton.current.select();
@@ -173,7 +181,7 @@ const App = () => {
                 value={selected ? selected.title : ""}
                 className={"profile-item" + showEdit}
                 placeholder="Enter Profile Name"
-                maxlength="25"
+                maxLength="25"
               /></form>
             </div>
             <div className="toolbar flex">
