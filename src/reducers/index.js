@@ -5,11 +5,12 @@ import profiles from './profile';
 
 const percistConfig = {
   key: 'root',
-  storage: storage
+  storage: storage,
+  blacklist: ['profiles']
 }
 
 const profilePercistConpig = {
-  key: 'profile',
+  key: 'profiles',
   storage: storage,
   blacklist: ['count']
 }
