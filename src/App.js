@@ -102,7 +102,6 @@ const App = (props) => {
 
   useEffect(() => {
     if (count > 0) {
-      console.log(profileList.current.scrollHeight);
       profileList.current.scrollTo(0, profileList.current.scrollHeight);
     }
     if (isEdit) {
@@ -152,7 +151,6 @@ const App = (props) => {
             <div className="toolbar flex">
               <div className="icon add" id="profileAdd" onClick={() => {
                 props.addProfile();
-                console.log(profileList.current.scrollHeight + 30);
               }}></div>
 
               <div className={"icon edit" + showButton} id="profileEdit" onClick={() => setIsEdit(!isEdit)}></div>

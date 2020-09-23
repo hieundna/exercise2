@@ -19,7 +19,6 @@ const profiles = (state = initialState, action) => {
   let index = getIndexSelected();
   switch (action.type) {
     case GET_PROFILE:
-      console.log(state.count);
       return {
         ...state
       }
