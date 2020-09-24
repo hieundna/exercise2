@@ -1,13 +1,11 @@
-export const GET_PROFILE = "GET_PROFILE";
-export const SELECT_PROFILE = "SELECT_PROFILE";
-export const ADD_PROFILE = "ADD_PROFILE";
-export const DELETE_PROFILE = "DELETE_PROFILE";
-export const RENAME_PROFILE = "RENAME_PROFILE";
-export const UP_PROFILE = "UP_PROFILE";
-export const DOWN_PROFILE = "DOWN_PROFILE";
+import { GET_PROFILE, SET_PROFILE, ADD_PROFILE, SELECT_PROFILE, UP_PROFILE, DOWN_PROFILE, DELETE_PROFILE, RENAME_PROFILE } from "./type";
 
 export const getProfile = () => ({
     type: GET_PROFILE
+});
+export const setProfile = (data) => ({
+    type: SET_PROFILE,
+    data
 });
 export const addProfile = () => ({
     type: ADD_PROFILE
