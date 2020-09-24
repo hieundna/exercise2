@@ -104,12 +104,15 @@ const App = (props) => {
     if (count > 0) {
       profileList.current.scrollTo(0, profileList.current.scrollHeight);
     }
+  }, [count])
+
+  useEffect(() => {
     if (isEdit) {
       editButton.current.style.top = document.getElementById(selected.id).offsetTop + 'px';
       editButton.current.focus();
       editButton.current.select();
     }
-  }, [count, isEdit])
+  }, [isEdit])
 
   useEffect(() => {
     setSelected(profile.filter((x) => x.actived === true)[0]);
@@ -128,11 +131,7 @@ const App = (props) => {
                 <div
                   key={i}
                   id={item.id}
-                  className={"profile-item "
-                    + item.name
-                    + (item.name === "custom" ? "" : " no-edit")
-                    + (item.actived ? " active" : "")
-                  }
+                  className={"profile-item " + item.name + (item.name === "custom" ? "" : " no-edit") + (item.actived ? " active" : "")}
                   onClick={() => props.selectProfile(i)}>
                   {item.title}
                 </div>
