@@ -5,7 +5,7 @@ import '../../assets/css/profile.css';
 import ProfileList from './ProfileList';
 import Toolbar from './Toolbar';
 
-const App = () => {
+const LeftSide = () => {
   return (
         <div className="thx-drawer flex">
           <div className="main-title">
@@ -19,4 +19,4 @@ const App = () => {
   );
 }
 
-export default App;
+export default LeftSide;

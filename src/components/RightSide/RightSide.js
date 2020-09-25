@@ -1,20 +1,17 @@
 import React from 'react';
 import '../../assets/css/main.css';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-const mapStateToProps = (state) => ({
-    selected: state.profiles.selected,
-  })
-
-const RightSide = (props) => {
+const RightSide = () => {
+  const selected = useSelector(state => state.profiles.selected);
     
   return (
         <div className="thx-window">
           <div className="sub-title flex">
-            <h1 id="eqTitle">{props.selected ? props.selected.title : ""}</h1>
+            <h1 id="eqTitle">{selected ? selected.title : ""}</h1>
           </div>
         </div>
   );
 }
 
-export default connect(mapStateToProps)(RightSide);
+export default RightSide;

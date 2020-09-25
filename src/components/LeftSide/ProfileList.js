@@ -2,28 +2,16 @@ import React, { useEffect, useRef } from 'react';
 import '../../assets/css/tooltip.css';
 import '../../assets/css/main.css';
 import '../../assets/css/profile.css';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getProfile, setProfile, setEdit, selectProfile, renameProfile } from '../../action/profile';
 
-const mapStateToProps = (state) => ({
-    profile: state.profiles.profile,
-    selected: state.profiles.selected,
-    count: state.profiles.count,
-    isEdit: state.profiles.isEdit
-})
+const ProfileList = () => {
+    const profile = useSelector(state => state.profiles.profile);
+    const selected = useSelector(state => state.profiles.selected);
+    const isEdit = useSelector(state => state.profiles.isEdit);
+    const count = useSelector(state => state.profiles.count);
 
-const mapDispatchToProps = (dispatch) => ({
-    dispatch,
-    getProfile: () => dispatch(getProfile()),
-    setProfile: (data) => dispatch(setProfile(data)),
-    setEdit: (data) => dispatch(setEdit(data)),
-    selectProfile: (index) => dispatch(selectProfile(index)),
-    renameProfile: (selected) => dispatch(renameProfile(selected)),
-})
-
-const App = (props) => {
-
-    const { profile, count, selected, isEdit } = props;
+    const dispatch = useDispatch();
 
     const profileList = useRef();
     const editButton = useRef();
@@ -32,21 +20,21 @@ const App = (props) => {
 
     const handleChange = (e) => {
         let title = e.target.value;
-        props.setProfile(title);
+        dispatch(setProfile(title));
     }
-    const renameProfile = () => {
+    const rename_Profile = () => {
         let index = profile.findIndex((x) => x === profile.filter((x) => x.actived === true)[0]);
         if (selected && selected.title.trim() === "") {
-            props.setProfile(profile[index].title);
-            props.setEdit(false);
+            dispatch(setProfile(profile[index].title));
+            dispatch(setEdit(false));
             return;
         }
-        props.renameProfile(selected);
-        props.setEdit(false);
+        dispatch(renameProfile(selected));
+        dispatch(setEdit(false));
     }
     const onSubmit = (e) => {
         e.preventDefault();
-        renameProfile();
+        rename_Profile();
     }
 
     useEffect(() => {
@@ -64,7 +52,7 @@ const App = (props) => {
     }, [isEdit])
 
     useEffect(() => {
-        props.getProfile();
+        dispatch(getProfile());
     }, [profile]);
 
     return (
@@ -74,7 +62,7 @@ const App = (props) => {
                     key={i}
                     id={item.id}
                     className={"profile-item " + item.name + (item.name === "custom" ? "" : " no-edit") + (item.actived ? " active" : "")}
-                    onClick={() => props.selectProfile(i)}>
+                    onClick={() => dispatch(selectProfile(i))}>
                     {item.title}
                 </div>
             ) : ""}
@@ -84,7 +72,7 @@ const App = (props) => {
                     id="profileRename"
                     ref={editButton}
                     onChange={handleChange}
-                    onBlur={renameProfile}
+                    onBlur={rename_Profile}
                     value={selected ? selected.title : ""}
                     className={"profile-item" + showEdit}
                     placeholder="Enter Profile Name"
@@ -94,4 +82,4 @@ const App = (props) => {
     );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default ProfileList;

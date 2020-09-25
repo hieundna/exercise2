@@ -2,27 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import '../../assets/css/tooltip.css';
 import '../../assets/css/main.css';
 import '../../assets/css/profile.css';
-import { connect } from 'react-redux';
-import { setEdit, upProfile, downProfile, addProfile, deleteProfile } from '../../action/profile';
+import { addProfile, upProfile, downProfile, deleteProfile, setEdit } from '../../action/profile';
+import { useSelector, useDispatch } from 'react-redux';
 
-const mapStateToProps = (state) => ({
-    profile: state.profiles.profile,
-    selected: state.profiles.selected,
-    isEdit: state.profiles.isEdit
-})
+const Toolbar = () => {
+    const profile = useSelector(state => state.profiles.profile);
+    const selected = useSelector(state => state.profiles.selected);
+    const isEdit = useSelector(state => state.profiles.isEdit);
 
-const mapDispatchToProps = (dispatch) => ({
-    dispatch,
-    setEdit: (data) => dispatch(setEdit(data)),
-    upProfile: () => dispatch(upProfile()),
-    downProfile: () => dispatch(downProfile()),
-    addProfile: () => dispatch(addProfile()),
-    deleteProfile: () => dispatch(deleteProfile()),
-})
-
-const App = (props) => {
-
-    const { profile, selected, isEdit } = props;
+    const dispatch = useDispatch();
+    
     const [isDelete, setIsDelete] = useState(false);
 
     const delButton = useRef();
@@ -41,18 +30,19 @@ const App = (props) => {
         if (!profile[index - 1]) {
             return;
         }
-        props.upProfile();
+        dispatch({ type: 'UPPROFILE'})
+        dispatch(upProfile());
     }
     const profileDown = () => {
         let index = getIndexSelected();
         if (!profile[index + 1]) {
             return;
         }
-        props.downProfile();
+        dispatch(downProfile());
     }
 
-    const deleteProfile = () => {
-        props.deleteProfile();
+    const delProfile = () => {
+        dispatch(deleteProfile());
         setIsDelete(false);
     }
 
@@ -73,10 +63,10 @@ const App = (props) => {
         <>
             <div className="toolbar flex">
                 <div className="icon add" id="profileAdd" onClick={() => {
-                    props.addProfile();
+                    dispatch(addProfile());
                 }}></div>
 
-                <div className={"icon edit" + showButton} id="profileEdit" onClick={() => props.setEdit(!isEdit)}></div>
+                <div className={"icon edit" + showButton} id="profileEdit" onClick={() => dispatch(setEdit(!isEdit))}></div>
                 <div className={"icon delete" + showButton} id="profileDelete" onClick={() => setIsDelete(!isDelete)}></div>
 
                 <div className={"icon down" + isLastItem} id="profileDown" onClick={profileDown}></div>
@@ -85,10 +75,10 @@ const App = (props) => {
             <div id="profileDelCfm" className={"profile-del alert flex" + showDelete} ref={delButton}>
                 <div className="title">delete eq</div>
                 <div className="body-text t-center" id="delName">delete eq</div>
-                <div className="thx-btn" id="cfmDelete" onClick={deleteProfile}>delete</div>
+                <div className="thx-btn" id="cfmDelete" onClick={delProfile}>delete</div>
             </div>
         </>
     );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default Toolbar;
