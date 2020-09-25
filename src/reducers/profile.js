@@ -1,4 +1,4 @@
-import { GET_PROFILE, SET_PROFILE, ADD_PROFILE, SELECT_PROFILE, UP_PROFILE, DOWN_PROFILE, DELETE_PROFILE, RENAME_PROFILE } from "../action/type";
+import { GET_PROFILE, SET_PROFILE, SET_EDIT, ADD_PROFILE, SELECT_PROFILE, UP_PROFILE, DOWN_PROFILE, DELETE_PROFILE, RENAME_PROFILE } from "../action/type";
 
 const initialState = {
   profile: [
@@ -8,6 +8,7 @@ const initialState = {
     { id: "profile4", name: "music", title: "Music", actived: false },
   ],
   selected: {},
+  isEdit: false,
   count: 0
 }
 
@@ -28,6 +29,11 @@ const profiles = (state = initialState, action) => {
       return {
         ...state,
         selected: {...state.selected, title: action.data}
+      }
+    case SET_EDIT:
+      return {
+        ...state,
+        isEdit: action.data
       }
     case SELECT_PROFILE:
       newProfile[index].actived = false;
