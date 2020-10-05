@@ -3,18 +3,18 @@ import '../../assets/css/tooltip.css';
 import '../../assets/css/main.css';
 import '../../assets/css/profile.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { getProfile, setProfile, setEdit, selectProfile, renameProfile } from '../../action/profile';
+import { setProfile, setEdit, selectProfile, renameProfile } from '../../action/profile';
 
 const ProfileList = () => {
     const profile = useSelector(state => state.profiles.profile);
     const selected = useSelector(state => state.profiles.selected);
     const isEdit = useSelector(state => state.profiles.isEdit);
-    const count = useSelector(state => state.profiles.count);
 
     const dispatch = useDispatch();
 
     const profileList = useRef();
     const editButton = useRef();
+    const prevProfile = useRef(profile);
 
     const showEdit = isEdit ? " show" : "";
 
@@ -38,12 +38,6 @@ const ProfileList = () => {
     }
 
     useEffect(() => {
-        if (count > 0) {
-            profileList.current.scrollTo(0, profileList.current.scrollHeight);
-        }
-    }, [count])
-
-    useEffect(() => {
         if (isEdit) {
             editButton.current.style.top = document.getElementById(selected.id).offsetTop + 'px';
             editButton.current.focus();
@@ -52,7 +46,10 @@ const ProfileList = () => {
     }, [isEdit])
 
     useEffect(() => {
-        dispatch(getProfile());
+        if (prevProfile.current.length < profile.length) {
+            profileList.current.scrollTo(0, profileList.current.scrollHeight);
+        }
+        prevProfile.current = profile;
     }, [profile]);
 
     return (

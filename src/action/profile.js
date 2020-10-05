@@ -1,8 +1,5 @@
-import { GET_PROFILE, SET_PROFILE, SET_EDIT, ADD_PROFILE, SELECT_PROFILE, UP_PROFILE, DOWN_PROFILE, DELETE_PROFILE, RENAME_PROFILE } from "./type";
+import { SET_PROFILE, SET_EDIT, ADD_PROFILE, SELECT_PROFILE, UP_PROFILE, DOWN_PROFILE, DELETE_PROFILE, RENAME_PROFILE } from "./type";
 
-export const getProfile = () => ({
-    type: GET_PROFILE
-});
 export const setProfile = (data) => ({
     type: SET_PROFILE,
     data

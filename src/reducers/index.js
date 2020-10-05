@@ -12,7 +12,7 @@ const percistConfig = {
 const profilePercistConpig = {
   key: 'profiles',
   storage: storage,
-  whitelist: ['profile']
+  blacklist: ['isEdit']
 }
 
 const rootReducer = combineReducers({

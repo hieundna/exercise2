@@ -1,4 +1,4 @@
-import { GET_PROFILE, SET_PROFILE, SET_EDIT, ADD_PROFILE, SELECT_PROFILE, UP_PROFILE, DOWN_PROFILE, DELETE_PROFILE, RENAME_PROFILE } from "../action/type";
+import { SET_PROFILE, SET_EDIT, ADD_PROFILE, SELECT_PROFILE, UP_PROFILE, DOWN_PROFILE, DELETE_PROFILE, RENAME_PROFILE } from "../action/type";
 
 const initialState = {
   profile: [
@@ -7,9 +7,8 @@ const initialState = {
     { id: "profile3", name: "movie", title: "Movie", actived: false },
     { id: "profile4", name: "music", title: "Music", actived: false },
   ],
-  selected: {},
-  isEdit: false,
-  count: 0
+  selected: { id: "profile1", name: "default", title: "Default", actived: true },
+  isEdit: false
 }
 
 const profiles = (state = initialState, action) => {
@@ -20,15 +19,10 @@ const profiles = (state = initialState, action) => {
   let newProfile = [...state.profile];
   let index = getIndexSelected();
   switch (action.type) {
-    case GET_PROFILE:
-      return {
-        ...state,
-        selected: newProfile[index]
-      }
     case SET_PROFILE:
       return {
         ...state,
-        selected: {...state.selected, title: action.data}
+        selected: { ...state.selected, title: action.data }
       }
     case SET_EDIT:
       return {
@@ -40,7 +34,8 @@ const profiles = (state = initialState, action) => {
       newProfile[action.index].actived = true;
       return {
         ...state,
-        profile: newProfile
+        profile: newProfile,
+        selected: newProfile[action.index]
       }
     case UP_PROFILE:
       let temp = newProfile[index];
@@ -65,18 +60,21 @@ const profiles = (state = initialState, action) => {
       return {
         ...state,
         profile: newProfile,
-        count: state.count + 1
+        selected: newProfile[newProfile.length - 1]
       }
     case DELETE_PROFILE:
-      newProfile.splice(index, 1);
+      let idx = index;
+      newProfile.splice(idx, 1);
       if (newProfile[index - 1]) {
-        newProfile[index - 1].actived = true;
+        idx -= 1;
+        newProfile[idx].actived = true;
       } else {
-        newProfile[index].actived = true;
+        newProfile[idx].actived = true;
       }
       return {
         ...state,
-        profile: newProfile
+        profile: newProfile,
+        selected: newProfile[idx]
       }
     case RENAME_PROFILE:
       let selected = action.selectedProfile;

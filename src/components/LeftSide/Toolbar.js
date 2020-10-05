@@ -11,15 +11,15 @@ const Toolbar = () => {
     const isEdit = useSelector(state => state.profiles.isEdit);
 
     const dispatch = useDispatch();
-    
+
     const [isDelete, setIsDelete] = useState(false);
 
     const delButton = useRef();
 
     const showButton = selected && selected.name === "custom" ? " show" : "";
     const showDelete = isDelete ? " show" : "";
-    const isFirstItem = selected && selected === profile[0] ? " disabled" : "";
-    const isLastItem = selected && selected === profile[profile.length - 1] ? " disabled" : "";
+    const isFirstItem = selected && selected.id === profile[0].id ? " disabled" : "";
+    const isLastItem = selected && selected.id === profile[profile.length - 1].id ? " disabled" : "";
 
     const getIndexSelected = () => {
         return profile.findIndex((x) => x === profile.filter((x) => x.actived === true)[0])
@@ -30,7 +30,7 @@ const Toolbar = () => {
         if (!profile[index - 1]) {
             return;
         }
-        dispatch({ type: 'UPPROFILE'})
+        dispatch({ type: 'UPPROFILE' })
         dispatch(upProfile());
     }
     const profileDown = () => {

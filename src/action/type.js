@@ -1,4 +1,3 @@
-export const GET_PROFILE = "GET_PROFILE";
 export const SET_PROFILE = "SET_PROFILE";
 export const SET_EDIT = "SET_EDIT";
 export const SELECT_PROFILE = "SELECT_PROFILE";
